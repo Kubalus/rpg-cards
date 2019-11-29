@@ -1,25 +1,27 @@
 import React from 'react';
 import './Card.css';
-import {User} from 'react-feather';
+import {CardData} from "../Choosing";
 
 type Props = {
-    isChosen: boolean;
+    card: CardData;
     cardRef: React.Ref<any>;
+    symbolRef: React.Ref<any>;
+    Icon: React.ComponentType;
 }
 
-const Card: React.FC<Props> = ({ isChosen, cardRef }) => {
+const Card: React.FC<Props> = ({ card: { imageURL, isChosen, title }, cardRef, symbolRef, Icon }) => {
     return (
-        <div ref={cardRef} className='Card__Container__Container'>
-            <div className='Card__Container'>
+        <div className='Card__Container__Container'>
+            <div className='Card__Container' ref={cardRef}>
                 <div className={isChosen ? 'Card' : 'Card Card__Backface'}>
                     <div className='Card__Title__Container'/>
                     <div className='Card__Title'>
-                        Karta
+                        {title}
                     </div>
                 </div>
             </div>
-            <div className='Card__Symbol'>
-                <User/>
+            <div className='Card__Symbol' ref={symbolRef}>
+                <Icon />
             </div>
         </div>
     );
