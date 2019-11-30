@@ -1,0 +1,66 @@
+type Card {
+    id : ID !,
+    title : String !,
+    author : String,
+    imageURL : String,
+    type : CardType
+}
+
+enum CardType{
+    GENRE
+    ANTAGONIST
+    ITEM
+    PLACE
+    COMPANION
+}
+
+type WaitingCard{
+    card : Card !,
+    score : Int !,
+    addingDate : Date !
+}
+
+type Date{
+    year : Int !,
+    mounth : Int !,
+    day : Int !
+}
+
+type CardSet {
+    id : ID !,
+    title : String !,
+    author : String,
+    genreCard : Card !,
+    antagonistCard : Card !,
+    itemCard : Card !,
+    placeCard : Card !,
+    companionCard : Card !,
+    score : Int
+}
+
+#type SetContainer{
+#    sets : [CardSet] !,
+#    cards : [Card] !
+#}
+
+#type WaitingContainer{
+#    waiting : [WaitingCard] !
+#    cardList : [Card] !,
+#}
+
+
+
+type Query {
+    randomCards: [Card],
+    randomSets: [CardSet],
+#    randomWaitingCards: WaitingContainer
+
+}
+
+type Mutation {
+    addCard(title: String !, cardType: String !, imageURL: String !,author: String !) : Int
+    addSet(title: String !, author: String, genreCard: ID !, antagonistCard: ID !,
+            itemCard: ID !, placeCard: ID !, companionCard: ID !) : Int
+    voteCard(card: ID !) : Int,
+    voteSet(set: ID !) : Int
+}
