@@ -19,6 +19,7 @@
     overflow-y: hidden;
     padding: 20px;
     max-width: 100%;
+    scroll-snap-type: x mandatory;
 }
 
 .Choosing__Cards::-webkit-scrollbar-track

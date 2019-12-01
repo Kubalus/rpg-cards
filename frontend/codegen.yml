@@ -1,6 +1,6 @@
 overwrite: true
-schema: 'https://spacexdata.herokuapp.com/graphql'
-documents: './src/components/**/*.ts'
+schema: 'http://6c688693.ngrok.io/graphql'
+documents: './src/components/**/*.{ts, tsx}'
 generates:
   src/generated/graphql.tsx:
     plugins:

@@ -3,8 +3,8 @@ import Card from "./components/Card";
 import './Choosing.css';
 import {Button} from '@material-ui/core';
 import {animateCardRotation} from "./animations";
-import { MapPin, Frown, Key, Heart, BookOpen } from 'react-feather';
-import SaveForm from "./components/SaveForm";
+import {BookOpen, Frown, Heart, Key, MapPin} from 'react-feather';
+import SaveForm from "./components/SaveForm/SaveForm";
 
 export type CardData = {
     title: string;
