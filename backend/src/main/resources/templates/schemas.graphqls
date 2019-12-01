@@ -2,8 +2,8 @@ type Card {
     id : ID !,
     title : String !,
     author : String,
-    imageURL : String,
-    type : CardType
+    imageURL : String !,
+    type : CardType !
 }
 
 enum CardType{

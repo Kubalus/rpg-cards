@@ -154,7 +154,7 @@ public class CardDataAccessService implements CardDAO {
 
     private List<UUID> getRandomWaitingIDs(int number) {
         int max = countWaiting();
-        int rand = -1;
+        int rand;
         UUID temp;
         List<UUID> cards = new ArrayList<>();
         if(number > max){
@@ -164,15 +164,13 @@ public class CardDataAccessService implements CardDAO {
             return cards;
         }
         for(int i = 0; i < number; i++){
-            while(!between(-1, rand, max)){
-                rand = (int)random.nextGaussian() * (max / 2);
-            }
+            rand = random.nextInt(max);
             temp = fetchRandomWaiting(rand);
             if(cards.contains(temp)){
                 i--;
+
             }
             else cards.add(temp);
-            rand = -1;
         }
         ;
         return cards;
@@ -250,7 +248,7 @@ public class CardDataAccessService implements CardDAO {
 
     private List<UUID> getRandomSets(int number) {
         int max = countSets();
-        int rand = -1;
+        int rand;
         UUID temp;
         List<UUID> sets = new ArrayList<>();
         if(number > max){
@@ -260,15 +258,12 @@ public class CardDataAccessService implements CardDAO {
             return sets;
         }
         for(int i = 0; i < number; i++){
-            while(!between(-1, rand, max)){
-                rand = (int)random.nextGaussian() * (max / 2);
-            }
+            rand = random.nextInt(max);
             temp = fetchRandomSet(rand);
             if(sets.contains(temp)){
                 i--;
             }
             else sets.add(temp);
-            rand = -1;
         }
         ;
         return sets;
