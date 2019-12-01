@@ -41,6 +41,19 @@ public class CardSet {
 
     }
 
+    public CardSet(String title, String author, UUID genreCard, UUID antagonistCard,
+                   UUID itemCard, UUID placeCard, UUID companionCard){
+        this.id = UUID.randomUUID();
+        this.title = title;
+        this.author = author;
+        this.genreCard = new Card(genreCard);
+        this.antagonistCard = new Card(antagonistCard);
+        this.itemCard = new Card(itemCard);
+        this.placeCard = new Card(placeCard);
+        this.companionCard = new Card(companionCard);
+        this.score = 1;
+    }
+
     public UUID getId() {
         return id;
     }

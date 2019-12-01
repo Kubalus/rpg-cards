@@ -2,10 +2,9 @@ package storyGenerator.DAO;
 
 import storyGenerator.model.Card;
 import storyGenerator.model.CardSet;
-import storyGenerator.model.SetContainer;
+import storyGenerator.model.WaitingCard;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface CardDAO {
@@ -21,7 +20,9 @@ public interface CardDAO {
 
     int voteForSet(UUID id);
 
-    SetContainer getRandomSetsWithCards();
+    List<CardSet> getRandomSetsWithCards(int number);
+
+    List<WaitingCard> getRandomWaitingCards(int number);
 
 
 }

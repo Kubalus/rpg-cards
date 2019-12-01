@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.UUID;
 
 public class WaitingCard {
-    UUID id;
+    Card card;
     int score;
     Date date;
 
-    public WaitingCard(UUID id, int score, Date date){
-        this.id = id;
+    public WaitingCard(Card card, int score, Date date){
+        this.card = card;
         this.score = score;
         this.date = date;
     }
@@ -22,7 +22,7 @@ public class WaitingCard {
         return score;
     }
 
-    public UUID getId() {
-        return id;
+    public Card getCard() {
+        return card;
     }
 }

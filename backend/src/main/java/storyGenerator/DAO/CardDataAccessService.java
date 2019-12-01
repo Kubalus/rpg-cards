@@ -28,13 +28,13 @@ public class CardDataAccessService implements CardDAO {
     public int insertCard(Card card) {
         Date date = new Date();
         String sql = "INSERT INTO main.\"Cards\"(\n" +
-                "\"ID\", title, \"URL\", author, \"cardType\", \"isAccepted\")\n" +
+                "\"ID\",  \"title\", \"URL\",  \"author\", \"cardType\", \"isAccepted\")\n" +
                 "VALUES (?, ?, ?, ?, CAST( ? AS main.\"cardType\"), ?);";
         String sql2 = "INSERT INTO main.\"WaitingCards\"(\n" +
                 "\"cardID\", score, \"addingDate\")\n" +
                 "VALUES (?, ?, ?);";
 
-        jdbcTemplate.update(sql + "\n" + sql2, card.getId(),card.getTitle(), card.getImageURL(),
+        jdbcTemplate.update(sql + "\n" + sql2, card.getId(), card.getTitle(), card.getImageURL(),
                 card.getAuthor(),card.getType().toString(), false, card.getId(),
                 1, date);
     return 0;
@@ -107,59 +107,178 @@ public class CardDataAccessService implements CardDAO {
     public int voteForSet(UUID id) {
         String sql = "UPDATE main.\"CardSets\"\n" +
                 "\tSET  score = score + 1\n" +
-                "\tWHERE \"cardID\" = ?;";
+                "\tWHERE \"ID\" = ?;";
 
         return jdbcTemplate.update(sql,id);
 
     }
 
     @Override
-    public SetContainer getRandomSetsWithCards() {
-        List<CardSet> sets = getRandomSets();
-        return new SetContainer(sets, fetchCardsForSets(sets));
+    public List<CardSet> getRandomSetsWithCards(int number) {
+        List<UUID> sets = getRandomSets(number);
+        return buildSets(sets);
     }
 
-    private List<Card> fetchCardsForSets(List<CardSet> sets) {
-        List<Card> cards = new ArrayList<>();
-        for (CardSet set: sets
-             ) {
-            cards.add(getCardByID(set.getAntagonistCard()));
-            cards.add(getCardByID(set.getPlaceCard()));
-            cards.add(getCardByID(set.getItemCard()));
-            cards.add(getCardByID(set.getCompanionCard()));
-            cards.add(getCardByID(set.getGenreCard()));
+    @Override
+    public List<WaitingCard> getRandomWaitingCards(int number) {
+       List<UUID> cards = getRandomWaitingIDs(number);
+       return buildWaiting(cards);
+    }
+
+    private List<WaitingCard> buildWaiting(List<UUID> cards) {
+        List<WaitingCard> result;
+        boolean next = false;
+        StringBuilder sql = new StringBuilder("SELECT \"ID\" as card, \"title\", \"URL\"," +
+                " \"author\", \"cardType\", \"score\", \"addingDate\"\n" +
+                "\tFROM main.\"WaitingCards\" INNER JOIN main.\"Cards\"\n" +
+                "\tON \"cardID\" = \"ID\" \n" +
+                "WHERE ");
+        for (UUID id : cards) {
+            if (next) {
+                sql.append(" OR \n");
+            }
+            sql.append("\"cardID\" = '").append(id.toString()).append("'");
+            next = true;
         }
+        sql.append(";");
+        result = jdbcTemplate.query(sql.toString(),(resultSet, i) ->{
+            return new WaitingCard(new Card(resultSet.getString("title"),
+                                            resultSet.getString("cardType"),
+                                            resultSet.getString("URL"),
+                                            resultSet.getString("author")),
+                    resultSet.getInt("score"),
+                    resultSet.getDate("addingDate")
+                    );} );
+        return result;
+    }
+
+    private List<UUID> getRandomWaitingIDs(int number) {
+        int max = countWaiting();
+        int rand = -1;
+        UUID temp;
+        List<UUID> cards = new ArrayList<>();
+        if(number > max){
+            for(int i = 0; i < max; i++){
+                cards.add(fetchRandomWaiting(i));
+            }
+            return cards;
+        }
+        for(int i = 0; i < number; i++){
+            while(!between(-1, rand, max)){
+                rand = (int)random.nextGaussian() * (max / 2);
+            }
+            temp = fetchRandomWaiting(rand);
+            if(cards.contains(temp)){
+                i--;
+            }
+            else cards.add(temp);
+            rand = -1;
+        }
+        ;
         return cards;
     }
 
-    private List<CardSet> getRandomSets() {
+    private UUID fetchRandomWaiting(int rand) {
+        String sql = "SELECT \"cardID\" FROM main.\"WaitingCards\"" +
+                " OFFSET "+ rand +" LIMIT 1;" ;
+        List<UUID> set = jdbcTemplate.query(sql, (resultSet, i) ->{
+                    return UUID.fromString(resultSet.getString("cardID"));
+                }
+        );
+        return set.get(0);
+    }
+
+    private int countWaiting() {
+        int size;
+        final String sql = "SELECT Count(\"cardID\") as size \n" +
+                "\tFROM main.\"WaitingCards\";";
+        size = jdbcTemplate.query(sql, (resultSet, i) ->{
+            return Integer.valueOf(resultSet.getInt("size"));
+        }).get(0);
+        return size;
+    }
+
+    private List<CardSet> buildSets(List<UUID> sets) {
+        List<CardSet> result;
+        boolean next = false;
+        StringBuilder sql = new StringBuilder("SELECT Set.\"ID\" as setID, Set.\"title\" as setTitle, Set.\"author\" as setAuthor, Set.\"score\",\n" +
+                " \tgenre.\"title\" as genreTitle, genre.\"URL\" as genreURL, genre.\"author\" as genreAuthor,\n" +
+                "\titem.\"title\" as itemTitle, item.\"URL\" as itemURL, item.\"author\" as itemAuthor,\n" +
+                "\tcompanion.\"title\" as companionTitle, companion.\"URL\" as companionURL, companion.\"author\" as companionAuthor,\n" +
+                "\tplace.\"title\" as placeTitle, place.\"URL\" as placeURL, place.\"author\" as placeAuthor,\n" +
+                "\tantagonist.\"title\" as antagonistTitle, antagonist.\"URL\" as antagonistURL, antagonist.\"author\" as antagonistAuthor\n" +
+                "FROM main.\"CardSets\" as Set \n" +
+                "\tINNER JOIN main.\"Cards\" as genre ON Set.\"genreCard\" = genre.\"ID\"\n" +
+                "\tINNER JOIN main.\"Cards\" as item ON Set.\"itemCard\" = item.\"ID\"\n" +
+                "\tINNER JOIN main.\"Cards\" as companion ON Set.\"companionCard\" = companion.\"ID\"\n" +
+                "\tINNER JOIN main.\"Cards\" as place ON Set.\"placeCard\" = place.\"ID\"\n" +
+                "\tINNER JOIN main.\"Cards\" as antagonist ON Set.\"antagonistCard\" = antagonist.\"ID\"\n" +
+                "WHERE ");
+        for (UUID id : sets) {
+            if (next) {
+                sql.append(" OR \n");
+            }
+            sql.append("Set.\"ID\" = '").append(id.toString()).append("'");
+            next = true;
+        }
+        sql.append(";");
+        result = jdbcTemplate.query(sql.toString(), (resultSet, i) ->{
+            return new CardSet(UUID.fromString(resultSet.getString("setID")),
+                    resultSet.getString("setTitle"), resultSet.getString("setAuthor"),
+                    new Card(null, resultSet.getString("genreTitle"),
+                            "GENRE", resultSet.getString("genreURL"),
+                            resultSet.getString("genreAuthor")),
+                    new Card(null, resultSet.getString("antagonistTitle"),
+                            "ANTAGONIST", resultSet.getString("antagonistURL"),
+                            resultSet.getString("antagonistAuthor")),
+                    new Card(null, resultSet.getString("itemTitle"),
+                            "ITEM", resultSet.getString("itemURL"),
+                            resultSet.getString("itemAuthor")),
+                    new Card(null, resultSet.getString("placeTitle"),
+                            "PLACE", resultSet.getString("placeURL"),
+                            resultSet.getString("placeAuthor")),
+                    new Card(null, resultSet.getString("companionTitle"),
+                            "COMPANION", resultSet.getString("companionURL"),
+                            resultSet.getString("companionAuthor")),
+                    resultSet.getInt("score"));
+
+        });
+
+        return result;
+    }
+
+
+    private List<UUID> getRandomSets(int number) {
         int max = countSets();
         int rand = -1;
-        List<CardSet> sets = new ArrayList<>();
-        for(int i = 0; i < 5; i++){
-            while(!between(0, rand, max)){
+        UUID temp;
+        List<UUID> sets = new ArrayList<>();
+        if(number > max){
+            for(int i = 0; i < max; i++){
+                sets.add(fetchRandomSet(i));
+            }
+            return sets;
+        }
+        for(int i = 0; i < number; i++){
+            while(!between(-1, rand, max)){
                 rand = (int)random.nextGaussian() * (max / 2);
             }
-            sets.add(fetchRandomSet(rand));
+            temp = fetchRandomSet(rand);
+            if(sets.contains(temp)){
+                i--;
+            }
+            else sets.add(temp);
             rand = -1;
         }
-
+        ;
         return sets;
     }
 
-    private CardSet fetchRandomSet(int rand) {
-        String sql = "SELECT * FROM main.\"CardSets\"" +
+    private UUID fetchRandomSet(int rand) {
+        String sql = "SELECT \"ID\" FROM main.\"CardSets\"" +
                 " OFFSET "+ rand +" LIMIT 1;" ;
-        List<CardSet> set = jdbcTemplate.query(sql, (resultSet, i) ->{
-                    return new CardSet(UUID.fromString(resultSet.getString("ID")),
-                            resultSet.getString("title"),
-                            resultSet.getString("author"),
-                            UUID.fromString(resultSet.getString("genreCard")),
-                            UUID.fromString(resultSet.getString("antagonistCard")),
-                            UUID.fromString(resultSet.getString("itemCard")),
-                            UUID.fromString(resultSet.getString("placeCard")),
-                            UUID.fromString(resultSet.getString("companionCard")),
-                            resultSet.getInt("score"));
+        List<UUID> set = jdbcTemplate.query(sql, (resultSet, i) ->{
+                    return UUID.fromString(resultSet.getString("ID"));
                 }
         );
         return set.get(0);
@@ -192,5 +311,7 @@ public class CardDataAccessService implements CardDAO {
                     resultSet.getString("author"));
         }).get(0);
     }
+
+
 
 }

@@ -1,6 +1,6 @@
 app:
   datasource:
-    jdbc-url: jdbc:postgresql://localhost:5432/storyGenerator
+    jdbc-url: jdbc:postgresql://localhost:5432/historyGenerator
     username: postgres
     password: haslo
     pool-size: 30

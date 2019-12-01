@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import storyGenerator.model.Card;
 import storyGenerator.model.CardSet;
-import storyGenerator.model.SetContainer;
+import storyGenerator.model.WaitingCard;
 import storyGenerator.model.WaitingContainer;
 import storyGenerator.service.CardService;
 
@@ -21,16 +21,15 @@ public class Query implements GraphQLQueryResolver {
         this.cardService = cardService;
     }
 
-    public SetContainer randomSets(){
-        return cardService.getRandomSetsWithCards();
+    public List<CardSet> randomSets(int number){
+        return cardService.getRandomSetsWithCards(number);
     }
 
     public List<Card> randomCards(){
         return cardService.getRandomCards();
     }
 
-    //TODO: Implement this method
-    public WaitingContainer randomWaitingCards(){
-        return null;
+    public List<WaitingCard> randomWaitingCards(int number){
+        return cardService.getRandomWaitingCards(number);
     }
 }

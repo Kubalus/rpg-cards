@@ -17,12 +17,12 @@ enum CardType{
 type WaitingCard{
     card : Card !,
     score : Int !,
-    addingDate : Date !
+    date : Date !
 }
 
 type Date{
     year : Int !,
-    mounth : Int !,
+    month : Int !,
     day : Int !
 }
 
@@ -38,22 +38,13 @@ type CardSet {
     score : Int
 }
 
-#type SetContainer{
-#    sets : [CardSet] !,
-#    cards : [Card] !
-#}
-
-#type WaitingContainer{
-#    waiting : [WaitingCard] !
-#    cardList : [Card] !,
-#}
-
 
 
 type Query {
     randomCards: [Card],
-    randomSets: [CardSet],
-#    randomWaitingCards: WaitingContainer
+    randomSets(number: Int !) : [CardSet],
+    randomWaitingCards(number: Int !) : [WaitingCard]
+
 
 }
 

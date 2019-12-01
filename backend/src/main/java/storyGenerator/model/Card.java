@@ -42,6 +42,14 @@ public class Card {
 
     }
 
+    public Card(UUID id){
+        this.id = id;
+        this.title = null;
+        this.type = null;
+        this.imageURL = null;
+        this.author = null;
+    }
+
     public CardType getType() {
         return type;
     }

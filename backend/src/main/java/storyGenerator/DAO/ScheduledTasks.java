@@ -47,7 +47,7 @@ public class ScheduledTasks {
                 if(nextAcc){
                     acceptedCardsSQL.append("OR ");
                 }
-                acceptedCardsSQL.append("\"ID\" = " + card.getId() + " ");
+                acceptedCardsSQL.append("\"ID\" = " + card.getCard().getId() + " ");
                 nextAcc = true;
                 accepted = true;
             }
@@ -55,7 +55,7 @@ public class ScheduledTasks {
                 if(nextExp){
                     expiredCardsSQL.append("OR ");
                 }
-                expiredCardsSQL.append("\"ID\" = " + card.getId() + " ");
+                expiredCardsSQL.append("\"ID\" = " + card.getCard().getId() + " ");
                 nextExp = true;
                 accepted = false;
             }
@@ -74,9 +74,10 @@ public class ScheduledTasks {
     private List<WaitingCard> fetchWaitingCards() {
         final String sql = "SELECT * FROM main.\"WaitingCards\"";
         return jdbcTemplate.query(sql, (resultSet, i) ->{
-                    return new WaitingCard(UUID.fromString(resultSet.getString("cardID")),
-                            Integer.parseInt(resultSet.getString("score")),
-                            dateFromString(resultSet.getString("addingDate")));
+//                    return new WaitingCard(UUID.fromString(resultSet.getString("cardID")),
+//                            Integer.parseInt(resultSet.getString("score")),
+//                            dateFromString(resultSet.getString("addingDate")));
+                return null;
                 }
         );
     }
