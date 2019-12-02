@@ -13,7 +13,7 @@ const Card: React.FC<Props> = ({ card: { imageURL, isChosen, title }, cardRef, s
     return (
         <div className='Card__Container__Container'>
             <div className='Card__Container' ref={cardRef}>
-                <div className={isChosen ? 'Card' : 'Card Card__Backface'}>
+                <div className={isChosen ? 'Card' : 'Card Card__Backface'} style={{backgroundImage: imageURL && `url(${imageURL})`}}>
                     <div className='Card__Title__Container'/>
                     <div className='Card__Title'>
                         {title}

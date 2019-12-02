@@ -5,6 +5,8 @@ import {Button} from '@material-ui/core';
 import {animateCardRotation} from "./animations";
 import {BookOpen, Frown, Heart, Key, MapPin} from 'react-feather';
 import SaveForm from "./components/SaveForm/SaveForm";
+import {useRandomSetQuery} from "./generated/graphql";
+import {useApolloClient} from "react-apollo-hooks";
 
 export type CardData = {
     title: string;
@@ -13,11 +15,11 @@ export type CardData = {
 }
 
 const initialCards: CardData[] = [
-    { title: 'Miejsce', isChosen: false, imageURL: '' },
-    { title: 'Antagonista', isChosen: false, imageURL: '' },
-    { title: 'Przedmiot', isChosen: false, imageURL: '' },
-    { title: 'Towarzysz', isChosen: false, imageURL: '' },
-    { title: 'Gatunek', isChosen: false, imageURL: '' },
+    {title: 'Miejsce', isChosen: false, imageURL: ''},
+    {title: 'Antagonista', isChosen: false, imageURL: ''},
+    {title: 'Przedmiot', isChosen: false, imageURL: ''},
+    {title: 'Towarzysz', isChosen: false, imageURL: ''},
+    {title: 'Gatunek', isChosen: false, imageURL: ''},
 ];
 
 const Choosing: React.FC = () => {
@@ -26,7 +28,10 @@ const Choosing: React.FC = () => {
     const symbolElts = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
     const icons = [MapPin, Frown, Key, Heart, BookOpen];
 
+    const client = useApolloClient();
+
     const animate = (idx: number) => {
+
         animateCardRotation(cardElts[idx].current!, symbolElts[idx].current!,
             () => setCards(prev => {
                 const next = [...prev];
@@ -35,7 +40,17 @@ const Choosing: React.FC = () => {
             }), idx);
     };
 
-    const handleClick = () => {
+    const randomSetQuery = useRandomSetQuery({client});
+
+    const handleClick = async () => {
+        await randomSetQuery.refetch();
+        const { data } = randomSetQuery;
+        if (data && data.randomCards) {
+            // @ts-ignore
+            const fetchedCards = data.randomCards.map((card: CardData) => ({...card, isChosen: false}));
+            setCards(fetchedCards);
+        }
+
         cardElts.forEach((el, idx) => {
             animate(idx);
         })
@@ -53,7 +68,7 @@ const Choosing: React.FC = () => {
             <Button variant="contained" color="primary" onClick={handleClick}>
                 LOSUJ
             </Button>
-            <SaveForm />
+            <SaveForm/>
         </div>
     );
 };
