@@ -1,18 +1,3 @@
-.Choosing {
-    background-color: #5c7ce7;
-    background-image: linear-gradient(0deg, #5c7ce7 0%, #d1f8ff 100%);
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.Choosing > * {
-    margin: 30px;
-}
-
 .Choosing__Cards {
     display: flex;
     justify-content: space-between;
@@ -20,6 +5,20 @@
     padding: 20px;
     max-width: 100%;
     scroll-snap-type: x mandatory;
+}
+
+@media (max-width: 1000px) {
+    .Choosing__Cards {
+        overflow-y: auto;
+        justify-content: space-around;
+        scroll-snap-type: y mandatory;
+        padding: 4px;
+        flex-wrap: wrap;
+    }
+
+    .Choosing__Cards > * {
+        margin: 4px;
+    }
 }
 
 .Choosing__Cards::-webkit-scrollbar-track
@@ -45,6 +44,7 @@
     color-stop(0.72, rgb(73,125,189)),
     color-stop(0.86, rgb(28,58,148)));
 }
+
 .Choosing__Cards > * {
     margin: 16px;
 }

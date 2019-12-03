@@ -1,19 +1,25 @@
 import React from 'react';
-import './Card.css';
-import {CardData} from "../Choosing";
+import './CardComponent.css';
+import {Card} from "../generated/graphql";
+import {getIcon} from "../Pages/Choosing/utils";
 
 type Props = {
-    card: CardData;
+    card: Card;
     cardRef: React.Ref<any>;
     symbolRef: React.Ref<any>;
-    Icon: React.ComponentType;
 }
 
-const Card: React.FC<Props> = ({ card: { imageURL, isChosen, title }, cardRef, symbolRef, Icon }) => {
-    return (
+const CardComponent: React.FC<Props> =
+    ({ card: { type, imageURL, title },
+        cardRef,
+        symbolRef}) => {
+
+        const Icon = getIcon(type) as React.FC;
+
+        return (
         <div className='Card__Container__Container'>
             <div className='Card__Container' ref={cardRef}>
-                <div className={isChosen ? 'Card' : 'Card Card__Backface'} style={{backgroundImage: imageURL && `url(${imageURL})`}}>
+                <div className={!!imageURL ? 'Card' : 'Card Card__Backface'} style={{backgroundImage: imageURL && `url(${imageURL})`}}>
                     <div className='Card__Title__Container'/>
                     <div className='Card__Title'>
                         {title}
@@ -27,4 +33,4 @@ const Card: React.FC<Props> = ({ card: { imageURL, isChosen, title }, cardRef, s
     );
 };
 
-export default Card;
+export default CardComponent;

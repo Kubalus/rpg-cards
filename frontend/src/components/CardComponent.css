@@ -16,6 +16,21 @@
     background-size: cover;
 }
 
+@media(max-width: 1400px) {
+    .Card {
+        width: 15vw;
+        height: calc(15vw * 1.4);
+        clip-path: none;
+    }
+}
+
+@media (max-width: 1000px) {
+    .Card {
+        width: 35vw;
+        height: calc(35vw * 1.4);
+    }
+}
+
 .Card__Backface {
     background-image: linear-gradient( 180deg, #F05F57 10%, #360940 100%);
     color: #fafafa;

@@ -1,11 +1,11 @@
-import Choosing from "./Choosing";
+import Choosing from "./Pages/Choosing/Choosing";
 import {ToastContainer} from "react-toastify";
 import * as React from 'react';
 import {ApolloProvider, ApolloProvider as ApolloHooksProvider} from "react-apollo-hooks";
 import ApolloClient from "apollo-boost";
 
 const client = new ApolloClient({
-    uri: 'http://b9c03b21.ngrok.io/graphql',
+    uri: 'http://0f1767e6.ngrok.io/graphql',
 });
 
 const App: React.FC = () => (
