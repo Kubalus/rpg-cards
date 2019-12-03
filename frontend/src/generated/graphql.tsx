@@ -121,8 +121,24 @@ export type RandomSetQuery = (
   { __typename?: 'Query' }
   & { randomCards: Maybe<Array<Maybe<(
     { __typename?: 'Card' }
-    & Pick<Card, 'title' | 'imageURL'>
+    & Pick<Card, 'title' | 'imageURL' | 'type' | 'id'>
   )>>> }
+);
+
+export type AddSetMutationVariables = {
+  title: Scalars['String'],
+  author: Scalars['String'],
+  genreCard: Scalars['ID'],
+  antagonistCard: Scalars['ID'],
+  itemCard: Scalars['ID'],
+  placeCard: Scalars['ID'],
+  companionCard: Scalars['ID']
+};
+
+
+export type AddSetMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addSet'>
 );
 
 
@@ -131,6 +147,8 @@ export const RandomSetDocument = gql`
   randomCards {
     title
     imageURL
+    type
+    id
   }
 }
     `;
@@ -176,3 +194,56 @@ export function useRandomSetLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHo
 export type RandomSetQueryHookResult = ReturnType<typeof useRandomSetQuery>;
 export type RandomSetLazyQueryHookResult = ReturnType<typeof useRandomSetLazyQuery>;
 export type RandomSetQueryResult = ApolloReactCommon.QueryResult<RandomSetQuery, RandomSetQueryVariables>;
+export const AddSetDocument = gql`
+    mutation AddSet($title: String!, $author: String!, $genreCard: ID!, $antagonistCard: ID!, $itemCard: ID!, $placeCard: ID!, $companionCard: ID!) {
+  addSet(title: $title, author: $author, genreCard: $genreCard, antagonistCard: $antagonistCard, itemCard: $itemCard, placeCard: $placeCard, companionCard: $companionCard)
+}
+    `;
+export type AddSetMutationFn = ApolloReactCommon.MutationFunction<AddSetMutation, AddSetMutationVariables>;
+export type AddSetComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<AddSetMutation, AddSetMutationVariables>, 'mutation'>;
+
+    export const AddSetComponent = (props: AddSetComponentProps) => (
+      <ApolloReactComponents.Mutation<AddSetMutation, AddSetMutationVariables> mutation={AddSetDocument} {...props} />
+    );
+    
+export type AddSetProps<TChildProps = {}> = ApolloReactHoc.MutateProps<AddSetMutation, AddSetMutationVariables> | TChildProps;
+export function withAddSet<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  AddSetMutation,
+  AddSetMutationVariables,
+  AddSetProps<TChildProps>>) {
+    return ApolloReactHoc.withMutation<TProps, AddSetMutation, AddSetMutationVariables, AddSetProps<TChildProps>>(AddSetDocument, {
+      alias: 'addSet',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useAddSetMutation__
+ *
+ * To run a mutation, you first call `useAddSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddSetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addSetMutation, { data, loading, error }] = useAddSetMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      author: // value for 'author'
+ *      genreCard: // value for 'genreCard'
+ *      antagonistCard: // value for 'antagonistCard'
+ *      itemCard: // value for 'itemCard'
+ *      placeCard: // value for 'placeCard'
+ *      companionCard: // value for 'companionCard'
+ *   },
+ * });
+ */
+export function useAddSetMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddSetMutation, AddSetMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddSetMutation, AddSetMutationVariables>(AddSetDocument, baseOptions);
+      }
+export type AddSetMutationHookResult = ReturnType<typeof useAddSetMutation>;
+export type AddSetMutationResult = ApolloReactCommon.MutationResult<AddSetMutation>;
+export type AddSetMutationOptions = ApolloReactCommon.BaseMutationOptions<AddSetMutation, AddSetMutationVariables>;

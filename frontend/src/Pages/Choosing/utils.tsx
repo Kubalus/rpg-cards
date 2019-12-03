@@ -66,4 +66,4 @@ const genreIconMap = new Map<CardType, React.FC>(
 
 export const getIcon = (type: CardType) => genreIconMap.get(type);
 
-export const pickByType = (type: CardType) => _.pickBy((card: Card) => card.type === type);
+export const findByType = (type: CardType) => _.find((card: Card) => card.type === type);
