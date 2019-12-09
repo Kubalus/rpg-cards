@@ -4,12 +4,12 @@ import {Field, FieldProps, Form, Formik, FormikProps} from "formik";
 import {Button, FormControl, TextField, Select, InputLabel, MenuItem} from "@material-ui/core";
 import {toast} from "react-toastify";
 import {useApolloClient} from "react-apollo-hooks";
-import {CardType} from "../../generated/graphql";
+import {CardType, useAddCardMutation, useAddSetMutation} from "../../generated/graphql";
 // @ts-ignore
 import validator from 'validate-image-url';
 import CardComponent from "../../components/CardComponent";
 
-const isValidURL = async (url: string) => await validator({url, timeout: 2000});
+// const isValidURL = async (url: string) => await validator({url, timeout: 2000});
 
 type FormValues = {
     cardName: string;
@@ -27,28 +27,24 @@ const initialValues: FormValues = {
 
 const NewCard: React.FC = () => {
     const client = useApolloClient();
-    // const [ addSetMutation ] = useAddSetMutation({
-    //     client,
-    //     onError: error => toast.error(error.message)
-    // });
+    const [ addCard ] = useAddCardMutation({
+        client,
+        onError: error => toast.error(error.message)
+    });
 
     const handleSubmit = async (values: FormValues) => {
         try {
-            // await saveSetSchema.validate(values);
-            // await addSetMutation({
-            //     variables: {
-            //         author: values.nickName,
-            //         title: values.cardSetName,
-            //         antagonistCard: cardSet.antagonistCard.id,
-            //         itemCard: cardSet.itemCard.id,
-            //         companionCard: cardSet.companionCard.id,
-            //         genreCard: cardSet.genreCard.id,
-            //         placeCard: cardSet.placeCard.id,
-            //     }
-            // });
-            isValidURL(values.imageURL).catch(err => {
-                throw new Error('Niepoprawny adres obrazka')
+            // await saveCard.validate(values);
+            await addCard({
+                variables: {
+                    author: values.nickName,
+                    title: values.cardName,
+                    imageURL: values.imageURL,
+                    type: values.type,
+                }
             });
+
+            toast.info('Dodano kartę!');
         } catch (error) {
             if (error.errors) {
                 error.errors.forEach((message: string) => toast.error(message));

@@ -29,3 +29,19 @@ export const QUERY_ADD_SET = gql`
         companionCard: $companionCard)
     }
 `;
+
+export const QUERY_ADD_CARD = gql`
+    mutation AddCard(
+      $title: String!,
+      $author: String!,
+      $type: String!,
+      $imageURL: String!
+    ) {
+        addCard(
+            title: $title,
+            cardType: $type,
+            imageURL: $imageURL,
+            author: $author
+        )
+    }
+`;

@@ -1,16 +1,32 @@
-import {CardSet} from "../../generated/graphql";
 import CardSetPanel from "./CardSetPanel";
 import * as React from 'react';
+import {useQuery} from "react-apollo-hooks";
+import {CardSet} from "../../generated/graphql";
+import {QUERY_GET_SETS} from "./query";
 
-// @ts-ignore
-const getCardSets = (): CardSet[] => {};
+type Props = {
+    setCurrentSet: (set: CardSet) => void;
+}
+const Preview: React.FC<Props> = ({ setCurrentSet }) => {
+    const [cardSets, setSets] = React.useState<CardSet[]>([]);
+    const randomSetsQuery = useQuery(QUERY_GET_SETS);
 
-const Preview: React.FC = () => {
-    const cardSets = getCardSets();
+    React.useEffect(() => {
+        const refetch = async () => {
+            await randomSetsQuery.refetch();
+
+            // @ts-ignore
+            if (randomSetsQuery.data) {
+                setSets(randomSetsQuery.data.randomSets || []);
+            }
+        };
+
+        refetch();
+    }, [randomSetsQuery]);
 
     return (
-        <div>
-            { cardSets.map(set => <CardSetPanel cardSet={set}/>)}
+        <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+            { cardSets.map(set => <CardSetPanel setCurrentSet={setCurrentSet} cardSet={set}/>)}
         </div>
     )
 };

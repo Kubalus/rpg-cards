@@ -5,8 +5,8 @@ import {getIcon} from "../Pages/Choosing/utils";
 
 type Props = {
     card: Card;
-    cardRef: React.Ref<any>;
-    symbolRef: React.Ref<any>;
+    cardRef?: React.Ref<any>;
+    symbolRef?: React.Ref<any>;
 }
 
 const CardComponent: React.FC<Props> =

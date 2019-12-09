@@ -141,6 +141,19 @@ export type AddSetMutation = (
   & Pick<Mutation, 'addSet'>
 );
 
+export type AddCardMutationVariables = {
+  title: Scalars['String'],
+  author: Scalars['String'],
+  type: Scalars['String'],
+  imageURL: Scalars['String']
+};
+
+
+export type AddCardMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addCard'>
+);
+
 
 export const RandomSetDocument = gql`
     query RandomSet {
@@ -247,3 +260,53 @@ export function useAddSetMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type AddSetMutationHookResult = ReturnType<typeof useAddSetMutation>;
 export type AddSetMutationResult = ApolloReactCommon.MutationResult<AddSetMutation>;
 export type AddSetMutationOptions = ApolloReactCommon.BaseMutationOptions<AddSetMutation, AddSetMutationVariables>;
+export const AddCardDocument = gql`
+    mutation AddCard($title: String!, $author: String!, $type: String!, $imageURL: String!) {
+  addCard(title: $title, cardType: $type, imageURL: $imageURL, author: $author)
+}
+    `;
+export type AddCardMutationFn = ApolloReactCommon.MutationFunction<AddCardMutation, AddCardMutationVariables>;
+export type AddCardComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<AddCardMutation, AddCardMutationVariables>, 'mutation'>;
+
+    export const AddCardComponent = (props: AddCardComponentProps) => (
+      <ApolloReactComponents.Mutation<AddCardMutation, AddCardMutationVariables> mutation={AddCardDocument} {...props} />
+    );
+    
+export type AddCardProps<TChildProps = {}> = ApolloReactHoc.MutateProps<AddCardMutation, AddCardMutationVariables> | TChildProps;
+export function withAddCard<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  AddCardMutation,
+  AddCardMutationVariables,
+  AddCardProps<TChildProps>>) {
+    return ApolloReactHoc.withMutation<TProps, AddCardMutation, AddCardMutationVariables, AddCardProps<TChildProps>>(AddCardDocument, {
+      alias: 'addCard',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useAddCardMutation__
+ *
+ * To run a mutation, you first call `useAddCardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddCardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addCardMutation, { data, loading, error }] = useAddCardMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      author: // value for 'author'
+ *      type: // value for 'type'
+ *      imageURL: // value for 'imageURL'
+ *   },
+ * });
+ */
+export function useAddCardMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddCardMutation, AddCardMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddCardMutation, AddCardMutationVariables>(AddCardDocument, baseOptions);
+      }
+export type AddCardMutationHookResult = ReturnType<typeof useAddCardMutation>;
+export type AddCardMutationResult = ApolloReactCommon.MutationResult<AddCardMutation>;
+export type AddCardMutationOptions = ApolloReactCommon.BaseMutationOptions<AddCardMutation, AddCardMutationVariables>;
