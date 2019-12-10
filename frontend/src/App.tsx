@@ -8,7 +8,8 @@ import Preview from "./Pages/Preview/Preview";
 import NewCard from "./Pages/NewCard/NewCard";
 import PreviewSet from "./Pages/Preview/PreviewSet";
 import {CardSet} from "./generated/graphql";
-import {Button} from "@material-ui/core";
+import {Button, Paper} from "@material-ui/core";
+import {Waiting} from "./Pages/Waiting/Waiting";
 
 const client = new ApolloClient({
     uri: 'http://5be40026.ngrok.io/graphql',
@@ -18,7 +19,8 @@ enum Page {
     Choosing = 'Choosing',
     Preview = 'Preview',
     CardSet = 'CardSet',
-    NewCard = 'NewCard'
+    NewCard = 'NewCard',
+    Waiting = 'Waiting'
 }
 
 type MenuProps = {
@@ -29,28 +31,30 @@ type MenuProps = {
 }
 
 const Menu: React.FC<MenuProps> = ({ handleRandom, handleSets, handleWaiting, handleNew }) => (
-  <div style={{ display: "flex", justifyContent: "center", width: '100%', padding: 30, position: 'fixed', bottom: '0px', left: '50%', transform: 'translateX(-50%)'}}>
-      <Button onClick={handleRandom}
-          type="submit" style={{margin: 16, width: '32pxs'}} variant="outlined" color="primary">
-          Losuj zestaw
-      </Button>
-      <Button onClick={handleSets}
-          type="submit" style={{margin: 16, width: '32pxs'}} variant="outlined" color="primary">
-          Zestawy
-      </Button>
-      <Button onClick={handleWaiting}
-          type="submit" style={{margin: 16, width: '32pxs'}} variant="outlined" color="primary">
-          Oczekujące karty
-      </Button>
-      <Button onClick={handleNew}
-              type="submit" style={{margin: 16, width: '32pxs'}} variant="outlined" color="primary">
-          Dodaj kartę
-      </Button>
+  <div style={{ display: "flex", justifyContent: "center", width: '100%', padding: 30, position: 'fixed', bottom: '0px', left: '50%', transform: 'translateX(-50%)', zIndex: 99}}>
+      <Paper>
+          <Button onClick={handleRandom}
+                  type="submit" style={{margin: 16, width: '32pxs'}} variant="outlined" color="primary">
+              Losuj zestaw
+          </Button>
+          <Button onClick={handleSets}
+                  type="submit" style={{margin: 16, width: '32pxs'}} variant="outlined" color="primary">
+              Zestawy
+          </Button>
+          <Button onClick={handleWaiting}
+                  type="submit" style={{margin: 16, width: '32pxs'}} variant="outlined" color="primary">
+              Oczekujące karty
+          </Button>
+          <Button onClick={handleNew}
+                  type="submit" style={{margin: 16, width: '32pxs'}} variant="outlined" color="primary">
+              Dodaj kartę
+          </Button>
+      </Paper>
   </div>
 );
 
 const App: React.FC = () => {
-    const [page, setPage] = useState<Page>(Page.Preview);
+    const [page, setPage] = useState<Page>(Page.Waiting);
     const [currentSet, setSet] = useState<CardSet | undefined>(undefined);
 
     const setCurrentSet = async (cardSet: CardSet) => {
@@ -60,7 +64,7 @@ const App: React.FC = () => {
 
     const handleRandom = () => setPage(Page.Choosing);
     const handleSets = () => setPage(Page.Preview);
-    const handleWaiting = () => setPage(Page.Choosing);
+    const handleWaiting = () => setPage(Page.Waiting);
     const handleNew = () => setPage(Page.NewCard);
 
     return (
@@ -72,7 +76,7 @@ const App: React.FC = () => {
                         : page === Page.Preview ? <Preview setCurrentSet={setCurrentSet} />
                         : page === Page.NewCard ? <NewCard />
                         : page === Page.CardSet ? <PreviewSet cardSet={currentSet} />
-                        : null
+                        : <Waiting />
                     }
                     <ToastContainer
                         position={"bottom-left"}

@@ -1,13 +1,14 @@
 import * as React from 'react';
 import './CardComponent.css';
-import { Card } from "../generated/graphql";
+import {Card, CardType} from "../generated/graphql";
+import {BookOpen, Frown, Heart, Key, MapPin} from "react-feather";
 
 type Props = {
     card: Card;
 }
 
 const CardRead: React.FC<Props> =
-    ({ card: { imageURL = '', title = '' } } ) => {
+    ({ card: { imageURL = '', title = '', type } } ) => {
         return (
             <div className='Card__Container__Container'>
                 <div className='Card__Container'>
@@ -19,7 +20,11 @@ const CardRead: React.FC<Props> =
                     </div>
                 </div>
                 <div className='Card__Symbol'>
-                    ?
+                    {type === CardType.Place && <MapPin />}
+                    {type === CardType.Antagonist && <Frown />}
+                    {type === CardType.Item && <Key />}
+                    {type === CardType.Companion && <Heart />}
+                    {type === CardType.Genre && <BookOpen />}
                 </div>
             </div>
         );

@@ -154,6 +154,31 @@ export type AddCardMutation = (
   & Pick<Mutation, 'addCard'>
 );
 
+export type WaitingCardsQueryVariables = {};
+
+
+export type WaitingCardsQuery = (
+  { __typename?: 'Query' }
+  & { randomWaitingCards: Maybe<Array<Maybe<(
+    { __typename?: 'WaitingCard' }
+    & Pick<WaitingCard, 'score'>
+    & { card: (
+      { __typename?: 'Card' }
+      & Pick<Card, 'title' | 'imageURL' | 'author' | 'type' | 'id'>
+    ) }
+  )>>> }
+);
+
+export type VoteCardMutationVariables = {
+  id: Scalars['ID']
+};
+
+
+export type VoteCardMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'voteCard'>
+);
+
 
 export const RandomSetDocument = gql`
     query RandomSet {
@@ -310,3 +335,106 @@ export function useAddCardMutation(baseOptions?: ApolloReactHooks.MutationHookOp
 export type AddCardMutationHookResult = ReturnType<typeof useAddCardMutation>;
 export type AddCardMutationResult = ApolloReactCommon.MutationResult<AddCardMutation>;
 export type AddCardMutationOptions = ApolloReactCommon.BaseMutationOptions<AddCardMutation, AddCardMutationVariables>;
+export const WaitingCardsDocument = gql`
+    query WaitingCards {
+  randomWaitingCards(number: 999) {
+    card {
+      title
+      imageURL
+      author
+      type
+      id
+    }
+    score
+  }
+}
+    `;
+export type WaitingCardsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<WaitingCardsQuery, WaitingCardsQueryVariables>, 'query'>;
+
+    export const WaitingCardsComponent = (props: WaitingCardsComponentProps) => (
+      <ApolloReactComponents.Query<WaitingCardsQuery, WaitingCardsQueryVariables> query={WaitingCardsDocument} {...props} />
+    );
+    
+export type WaitingCardsProps<TChildProps = {}> = ApolloReactHoc.DataProps<WaitingCardsQuery, WaitingCardsQueryVariables> | TChildProps;
+export function withWaitingCards<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  WaitingCardsQuery,
+  WaitingCardsQueryVariables,
+  WaitingCardsProps<TChildProps>>) {
+    return ApolloReactHoc.withQuery<TProps, WaitingCardsQuery, WaitingCardsQueryVariables, WaitingCardsProps<TChildProps>>(WaitingCardsDocument, {
+      alias: 'waitingCards',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useWaitingCardsQuery__
+ *
+ * To run a query within a React component, call `useWaitingCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWaitingCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWaitingCardsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useWaitingCardsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<WaitingCardsQuery, WaitingCardsQueryVariables>) {
+        return ApolloReactHooks.useQuery<WaitingCardsQuery, WaitingCardsQueryVariables>(WaitingCardsDocument, baseOptions);
+      }
+export function useWaitingCardsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<WaitingCardsQuery, WaitingCardsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<WaitingCardsQuery, WaitingCardsQueryVariables>(WaitingCardsDocument, baseOptions);
+        }
+export type WaitingCardsQueryHookResult = ReturnType<typeof useWaitingCardsQuery>;
+export type WaitingCardsLazyQueryHookResult = ReturnType<typeof useWaitingCardsLazyQuery>;
+export type WaitingCardsQueryResult = ApolloReactCommon.QueryResult<WaitingCardsQuery, WaitingCardsQueryVariables>;
+export const VoteCardDocument = gql`
+    mutation VoteCard($id: ID!) {
+  voteCard(card: $id)
+}
+    `;
+export type VoteCardMutationFn = ApolloReactCommon.MutationFunction<VoteCardMutation, VoteCardMutationVariables>;
+export type VoteCardComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<VoteCardMutation, VoteCardMutationVariables>, 'mutation'>;
+
+    export const VoteCardComponent = (props: VoteCardComponentProps) => (
+      <ApolloReactComponents.Mutation<VoteCardMutation, VoteCardMutationVariables> mutation={VoteCardDocument} {...props} />
+    );
+    
+export type VoteCardProps<TChildProps = {}> = ApolloReactHoc.MutateProps<VoteCardMutation, VoteCardMutationVariables> | TChildProps;
+export function withVoteCard<TProps, TChildProps = {}>(operationOptions?: ApolloReactHoc.OperationOption<
+  TProps,
+  VoteCardMutation,
+  VoteCardMutationVariables,
+  VoteCardProps<TChildProps>>) {
+    return ApolloReactHoc.withMutation<TProps, VoteCardMutation, VoteCardMutationVariables, VoteCardProps<TChildProps>>(VoteCardDocument, {
+      alias: 'voteCard',
+      ...operationOptions
+    });
+};
+
+/**
+ * __useVoteCardMutation__
+ *
+ * To run a mutation, you first call `useVoteCardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVoteCardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [voteCardMutation, { data, loading, error }] = useVoteCardMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVoteCardMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<VoteCardMutation, VoteCardMutationVariables>) {
+        return ApolloReactHooks.useMutation<VoteCardMutation, VoteCardMutationVariables>(VoteCardDocument, baseOptions);
+      }
+export type VoteCardMutationHookResult = ReturnType<typeof useVoteCardMutation>;
+export type VoteCardMutationResult = ApolloReactCommon.MutationResult<VoteCardMutation>;
+export type VoteCardMutationOptions = ApolloReactCommon.BaseMutationOptions<VoteCardMutation, VoteCardMutationVariables>;

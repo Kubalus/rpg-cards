@@ -1,0 +1,12 @@
+.WaitingContainer {
+    width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    overflow: auto;
+}
+
+.WaitingContainer > * {
+    margin: 30px;
+}

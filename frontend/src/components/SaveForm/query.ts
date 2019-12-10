@@ -45,3 +45,23 @@ export const QUERY_ADD_CARD = gql`
         )
     }
 `;
+
+export const QUERY_WAITING_CARDS = gql`
+query WaitingCards {
+    randomWaitingCards(number: 999) {
+        card {
+            title
+            imageURL
+            author
+            type
+            id
+        }
+        score
+    }
+}`;
+
+export const QUERY_VOTE_CARD = gql`
+    mutation VoteCard($id: ID!) {
+        voteCard(card: $id)
+    }
+`;

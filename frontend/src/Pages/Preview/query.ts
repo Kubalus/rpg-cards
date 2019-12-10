@@ -11,26 +11,31 @@ export const QUERY_GET_SETS = gql`
                 title
                 author
                 imageURL
+                type
             }
             antagonistCard {
                 title
                 author
                 imageURL
+                type
             }
             itemCard {
                 title
                 author
                 imageURL
+                type
             }
             placeCard {
                 title
                 author
                 imageURL
+                type
             }
             companionCard {
                 title
                 author
                 imageURL
+                type
             }
         }
     }

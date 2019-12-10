@@ -43,6 +43,8 @@ const SaveForm: React.FC<Props> = ({cardSet}) => {
                     placeCard: cardSet.placeCard.id,
                 }
             });
+
+            toast.info(`Dodano nowy zestaw ${values.cardSetName}!`);
         } catch (error) {
             if (error.errors) {
                 error.errors.forEach((message: string) => toast.error(message));
