@@ -29,3 +29,39 @@ export const QUERY_ADD_SET = gql`
         companionCard: $companionCard)
     }
 `;
+
+export const QUERY_ADD_CARD = gql`
+    mutation AddCard(
+      $title: String!,
+      $author: String!,
+      $type: String!,
+      $imageURL: String!
+    ) {
+        addCard(
+            title: $title,
+            cardType: $type,
+            imageURL: $imageURL,
+            author: $author
+        )
+    }
+`;
+
+export const QUERY_WAITING_CARDS = gql`
+query WaitingCards {
+    randomWaitingCards(number: 999) {
+        card {
+            title
+            imageURL
+            author
+            type
+            id
+        }
+        score
+    }
+}`;
+
+export const QUERY_VOTE_CARD = gql`
+    mutation VoteCard($id: ID!) {
+        voteCard(card: $id)
+    }
+`;
